@@ -43,8 +43,11 @@ importers:
       eslint-plugin-react-hooks: ^4.4.0
       eslint-plugin-unicorn: ^42.0.0
       eslint-plugin-unused-imports: ^2.0.0
+      glob: ^7.2.0
+      glob-promise: ^4.2.2
       gulp: ^4.0.2
       husky: ^7.0.4
+      i18next: ^21.6.14
       immer: 9.0.12
       jest: ^28.0.0-alpha.8
       lint-staged: ^12.3.7
@@ -77,13 +80,16 @@ importers:
       '@types/react': 18.0.2
       '@types/react-dom': 18.0.0
       '@types/web': 0.0.61
+      glob: 7.2.0
+      glob-promise: 4.2.2_glob@7.2.0
+      i18next: 21.6.15
       immer: 9.0.12
       lodash: 4.17.21
       lodash-es: 4.17.21
       lodash-unified: 1.0.2_da03a4540fbd16bbaafbb96724306afd
       react: 18.0.0
       react-dom: 18.0.0_react@18.0.0
-      react-i18next: 11.16.5_react-dom@18.0.0+react@18.0.0
+      react-i18next: 11.16.5_7a73451d41bf608e278210799a30f59a
       ses: 0.15.12
       ts-results: 3.3.0
       web3-core: 1.7.3
@@ -625,7 +631,7 @@ importers:
       unstated-next: 1.1.0
       use-subscription: 1.6.0_react@18.0.0
     devDependencies:
-      react-i18next: 11.16.5_react-dom@18.0.0+react@18.0.0
+      react-i18next: 11.16.5_7a73451d41bf608e278210799a30f59a
 
   packages/plugins/CrossChainBridge:
     specifiers:
@@ -3974,6 +3980,7 @@ packages:
 
   /@dimensiondev/eslint-plugin/0.0.2-20220414093950-7d54c58_eslint@8.13.0:
     resolution: {integrity: sha512-H6ZmwT+mhplwYU0j8bvNmBNp0y5pT6fMfb3OjWiWkhF5W7LKxUy9YZLc6XfsCHC56hPTPq5u/pCjRBtE4Y1qxQ==, tarball: download/@dimensiondev/eslint-plugin/0.0.2-20220414093950-7d54c58/515fb9cbdd7dba3b6da5e0686027b2ec170872dc10618b545a9035dea7a12633}
+    engines: {node: '>= 16'}
     peerDependencies:
       eslint: '>= 8'
     dependencies:
@@ -16235,6 +16242,16 @@ packages:
       glob: 7.2.0
     dev: true
 
+  /glob-promise/4.2.2_glob@7.2.0:
+    resolution: {integrity: sha512-xcUzJ8NWN5bktoTIX7eOclO1Npxd/dyVqUJxlLIDasT4C7KZyqlPIwkdJ0Ypiy3p2ZKahTjK4M9uC3sNSfNMzw==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      glob: ^7.1.6
+    dependencies:
+      '@types/glob': 7.2.0
+      glob: 7.2.0
+    dev: false
+
   /glob-stream/6.1.0:
     resolution: {integrity: sha1-cEXJlBOz65SIjYOrRtC0BMx73eQ=}
     engines: {node: '>= 0.10'}
@@ -22102,7 +22119,7 @@ packages:
       react: 18.0.0
     dev: false
 
-  /react-i18next/11.16.5_react-dom@18.0.0+react@18.0.0:
+  /react-i18next/11.16.5_7a73451d41bf608e278210799a30f59a:
     resolution: {integrity: sha512-dkDN9suVU/jaD9A0xM4qNU9++LwgueWZn5XGTDEKTZeBgsd3q17ssTQXlSbEb0Gl0iLDdUKU7MrdjQjDc33ztA==}
     peerDependencies:
       i18next: '>= 19.0.0'
@@ -22118,6 +22135,7 @@ packages:
       '@babel/runtime': 7.17.9
       html-escaper: 2.0.2
       html-parse-stringify: 3.0.1
+      i18next: 21.6.15
       react: 18.0.0
       react-dom: 18.0.0_react@18.0.0
 
