@@ -18,6 +18,7 @@ import { BuildFlags, normalizeBuildFlags, computedBuildFlags } from './flags'
 import ResolveTypeScriptPlugin from 'resolve-typescript-plugin'
 
 import './clean-hmr'
+import { buildCSP } from './ContentSecurityPolicyBuilder'
 
 export function createConfiguration(rawFlags: BuildFlags): Configuration {
     const normalizedFlags = normalizeBuildFlags(rawFlags)
@@ -246,14 +247,10 @@ export function createConfiguration(rawFlags: BuildFlags): Configuration {
         debug: normalizeEntryDescription(join(__dirname, '../src/extension/debug-page/index.tsx')),
     })
     baseConfig.plugins!.push(
-        addHTMLEntry({ chunks: ['dashboard'], filename: 'dashboard.html', sourceMap: !!sourceMapKind }),
-        addHTMLEntry({ chunks: ['popups'], filename: 'popups.html', sourceMap: !!sourceMapKind }),
-        addHTMLEntry({
-            chunks: ['contentScript'],
-            filename: 'generated__content__script.html',
-            sourceMap: !!sourceMapKind,
-        }),
-        addHTMLEntry({ chunks: ['debug'], filename: 'debug.html', sourceMap: !!sourceMapKind }),
+        addHTMLEntry({ chunks: ['dashboard'], filename: 'dashboard.html', mode }),
+        addHTMLEntry({ chunks: ['popups'], filename: 'popups.html', mode }),
+        addHTMLEntry({ chunks: ['contentScript'], filename: 'generated__content__script.html', mode }),
+        addHTMLEntry({ chunks: ['debug'], filename: 'debug.html', mode }),
     )
     // background
     if (runtime.manifest === 3) {
@@ -271,7 +268,7 @@ export function createConfiguration(rawFlags: BuildFlags): Configuration {
                 filename: 'background.html',
                 secp256k1: true,
                 gun: true,
-                sourceMap: !!sourceMapKind,
+                mode,
             }),
         )
     }
@@ -297,8 +294,8 @@ export function createConfiguration(rawFlags: BuildFlags): Configuration {
 }
 function addHTMLEntry(
     options: HTMLPlugin.Options & {
+        mode: 'production' | 'development'
         secp256k1?: boolean
-        sourceMap: boolean
         gun?: boolean
     },
 ) {
@@ -312,12 +309,13 @@ function addHTMLEntry(
     if (options.gun) {
         templateContent = templateContent.replace(`<!-- Gun -->`, '<script src="/gun.js"></script>')
     }
-    if (options.sourceMap) {
-        templateContent = templateContent.replace(
-            `<!-- CSP -->`,
-            `<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval'; require-trusted-types-for 'script'; trusted-types default webpack">`,
-        )
-    }
+
+    const { csp, csp_report_only } = buildCSP()[options.mode]
+    templateContent = templateContent.replace(
+        `<!-- CSP -->`,
+        `<meta http-equiv="Content-Security-Policy" content="${csp}">
+        <meta http-equiv="Content-Security-Policy-Report-Only" content="${csp_report_only}">`,
+    )
     return new HTMLPlugin({
         templateContent,
         inject: 'body',
