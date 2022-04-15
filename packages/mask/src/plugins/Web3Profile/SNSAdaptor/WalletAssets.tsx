@@ -1,0 +1,143 @@
+import { Card, Typography, Link, Box } from '@mui/material'
+import { LinkOutIcon } from '@masknet/icons'
+import { makeStyles, useStylesExtends } from '@masknet/theme'
+import {
+    AddressName,
+    useCollectibles,
+    useCollections,
+    ChainId,
+    ERC721ContractDetailed,
+    isSameAddress,
+} from '@masknet/web3-shared-evm'
+import { useMemo, useState } from 'react'
+import { useI18N } from '../locales'
+import { ImageIcon } from './ImageIcon'
+import { uniqBy } from 'lodash-unified'
+
+const useStyles = makeStyles()((theme) => {
+    console.log({ theme })
+    return {
+        wrapper: {},
+
+        walletInfo: {
+            display: 'flex',
+            alignItems: 'center',
+        },
+        walletName: {
+            fontSize: '16px',
+            fontWeight: 400,
+            marginLeft: '4px',
+        },
+        collectionWrap: {
+            width: '90px',
+            height: '90px',
+            borderRadius: '12px',
+            marginTop: '12px',
+            border: `1px solid ${theme.palette.divider}`,
+            background: 'rgba(229,232,235,1)',
+            cursor: 'pointer',
+        },
+        link: {
+            cursor: 'pointer',
+            lineHeight: '10px',
+            marginTop: 2,
+            '&:hover': {
+                textDecoration: 'none',
+            },
+        },
+        linkIcon: {
+            fill: 'none',
+            width: 12,
+            height: 12,
+            marginLeft: theme.spacing(0.5),
+        },
+    }
+})
+
+export interface WalletAssetsCardProps extends withClasses<never | 'root'> {
+    // avatar?: string
+    // nickName?: string
+    // platformId?: string
+    // isCurrent?: boolean
+    // openImageSetting: (str: string) => void
+    networkIcon?: URL
+    addressName: AddressName
+}
+
+export function WalletAssetsCard(props: WalletAssetsCardProps) {
+    // const { avatar, nickName = 'unknown', platformId = 'unknown', isCurrent = false, openImageSetting } = props
+    const { networkIcon, addressName } = props
+    const t = useI18N()
+    const classes = useStylesExtends(useStyles(), props)
+    const [open, setOpen] = useState(false)
+    // const {value} = useAsyncRetry(async()=>{
+    //     return usePersonaBoundPlatform
+    // },[])
+    const { resolvedAddress: address } = addressName
+
+    const chainId = ChainId.Mainnet
+    const { data: collectionsFormRemote } = useCollections(address, chainId)
+    const {
+        data: collectibles,
+        state: loadingCollectibleDone,
+        retry: retryFetchCollectible,
+    } = useCollectibles(address, chainId)
+    // const isLoading = loadingCollectibleDone !== SocketState.done
+    // const renderWithRarible = useMemo(() => {
+    //     if (isLoading) return []
+    //     return collectibles.filter((item) => !item.collection)
+    // }, [collectibles?.length])
+    const collections = useMemo(() => {
+        return uniqBy(
+            collectibles.map((x) => x.contractDetailed),
+            (x) => x.address.toLowerCase(),
+        ).map((x) => {
+            const item = collectionsFormRemote.find((c) => isSameAddress(c.address, x.address))
+            if (item) {
+                return {
+                    name: item.name,
+                    symbol: item.name,
+                    baseURI: item.iconURL,
+                    iconURL: item.iconURL,
+                    address: item.address,
+                } as ERC721ContractDetailed
+            }
+            return x
+        })
+    }, [collectibles.length, collectionsFormRemote.length])
+
+    console.log({ collectibles, collectionsFormRemote })
+
+    const account = '0x790116d0685eB197B886DAcAD9C247f785987A4a'
+
+    return (
+        <Card className={classes.wrapper}>
+            <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className={classes.walletInfo}>
+                        <ImageIcon icon={networkIcon} size={20} borderRadius="0" />
+                        <Typography className={classes.walletName}>aaa.eth</Typography>
+                        <Link
+                            className={classes.link}
+                            href={account ? 'kk' : ''}
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            <LinkOutIcon className={classes.linkIcon} />
+                        </Link>
+                    </div>
+                    <div onClick={() => setOpen(true)}>
+                        <ImageIcon size={20} icon={new URL('./assets/settingIcon.png', import.meta.url)} />
+                    </div>
+                </div>
+            </div>
+
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+                {collections?.slice(0, 10)?.map((collection, i) => (
+                    <div key={i} className={classes.collectionWrap}>
+                        <ImageIcon size={89} borderRadius="12px" icon={collection?.iconURL} />
+                    </div>
+                ))}
+            </Box>
+        </Card>
+    )
+}
