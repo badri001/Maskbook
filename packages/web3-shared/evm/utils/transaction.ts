@@ -1,9 +1,6 @@
 import { sha3, toHex } from 'web3-utils'
-import type { TransactionReceipt } from 'web3-core'
 import { unreachable } from '@dimensiondev/kit'
-import type { TransactionState } from '../hooks'
 import { EthereumTransactionConfig, TransactionStateType } from '../types'
-import { getReceiptStatus } from './payload'
 import { isEmptyHex } from './address'
 import { ZERO_ADDRESS } from '../constants'
 
@@ -83,42 +80,4 @@ export function getTransactionSignature(transaction: EthereumTransactionConfig |
     if (!transaction) return
     const { from, to, data, value } = transaction
     return sha3([from, to, data || '0x0', toHex(value || '0x0') || '0x0'].join('_')) ?? undefined
-}
-
-export function getTransactionState(receipt: TransactionReceipt): TransactionState {
-    if (receipt.blockNumber) {
-        const status = getReceiptStatus(receipt)
-        switch (status) {
-            case TransactionStatusType.SUCCEED:
-                return {
-                    type: TransactionStateType.CONFIRMED,
-                    no: 0,
-                    receipt,
-                }
-            case TransactionStatusType.FAILED:
-                return {
-                    type: TransactionStateType.FAILED,
-                    receipt,
-                    error: new Error('FAILED'),
-                }
-            case TransactionStatusType.NOT_DEPEND:
-                return {
-                    type: TransactionStateType.FAILED,
-                    receipt,
-                    error: new Error('Invalid transaction status.'),
-                }
-            case TransactionStatusType.CANCELLED:
-                return {
-                    type: TransactionStateType.FAILED,
-                    receipt,
-                    error: new Error('CANCELLED'),
-                }
-            default:
-                unreachable(status)
-        }
-    }
-    return {
-        type: TransactionStateType.RECEIPT,
-        receipt,
-    }
 }

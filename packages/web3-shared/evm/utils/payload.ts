@@ -1,9 +1,7 @@
 import { first } from 'lodash-unified'
 import { sha3 } from 'web3-utils'
-import type { TransactionReceipt } from 'web3-core'
 import type { JsonRpcPayload } from 'web3-core-helpers'
-import { EthereumMethodType, EthereumTransactionConfig, TransactionStatusType } from '../types'
-import { isSameAddress } from './address'
+import { EthereumMethodType, EthereumTransactionConfig } from '../types'
 
 export function createPayload(id: number, method: string, params: any[]) {
     return {
@@ -85,15 +83,4 @@ export function getPayloadHash(payload: JsonRpcPayload) {
 export function getPayloadNonce(payload: JsonRpcPayload) {
     const config = getPayloadConfig(payload)
     return config?.nonce
-}
-
-export function getReceiptStatus(receipt: TransactionReceipt | null) {
-    if (!receipt) return TransactionStatusType.NOT_DEPEND
-    const status = receipt.status as unknown as string
-    if (receipt.status === false || ['0', '0x', '0x0'].includes(status)) return TransactionStatusType.FAILED
-    if (receipt.status === true || ['1', '0x1'].includes(status)) {
-        if (isSameAddress(receipt.from, receipt.to)) return TransactionStatusType.CANCELLED
-        return TransactionStatusType.SUCCEED
-    }
-    return TransactionStatusType.NOT_DEPEND
 }

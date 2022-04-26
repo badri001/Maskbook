@@ -3,7 +3,7 @@ import { upperFirst } from 'lodash-unified'
 import { createLookupTableResolver } from '@masknet/web3-shared-base'
 import CHAINS from '../assets/chains.json'
 import { getRPCConstants, getCoinGeckoConstants } from '../constants'
-import { ChainId, NetworkType, ProviderType } from '../types'
+import { ChainId, NetworkType } from '../types'
 
 export function isChainIdValid(chainId: ChainId, allowTestnet = false) {
     const chainDetailed = getChainDetailed(chainId)

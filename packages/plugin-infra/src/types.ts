@@ -1,11 +1,11 @@
 /* eslint @dimensiondev/unicode/specific-set: ["error", { "only": "code" }] */
 import type React from 'react'
-import type { Transaction } from 'web3-core'
 import type { Option, Result } from 'ts-results'
 import type { Subscription } from 'use-subscription'
 import type { JsonRpcPayload, JsonRpcResponse } from 'web3-core-helpers'
 import type { TypedMessage } from '@masknet/typed-message'
 import type { ScopedStorage, ProfileIdentifier, PersonaIdentifier, PopupRoutes } from '@masknet/shared-base'
+import type { Transaction } from '@masknet/web3-shared-evm'
 import type { Emitter } from '@servie/events'
 import type { Web3Plugin } from './web3-types'
 import type { Web3Helper } from './web3-helpers'
