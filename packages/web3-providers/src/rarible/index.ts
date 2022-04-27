@@ -17,8 +17,8 @@ import {
     RaribleProfileResponse,
 } from './types'
 import { RaribleUserURL, RaribleRopstenUserURL, RaribleMainnetURL, RaribleChainURL, RaribleURL } from './constants'
-import { NonFungibleTokenAPI } from '..'
 import { isProxyENV } from '../helpers'
+import type { NonFungibleTokenAPI } from '../types'
 
 const resolveRaribleUserNetwork = createLookupTableResolver<ChainId.Mainnet | ChainId.Ropsten, string>(
     {

@@ -202,22 +202,6 @@ export function resolveDomainLink(domain?: string) {
     return urlcat('https://app.ens.domains/name/:domain/details', { domain })
 }
 
-export function resolveCollectibleProviderLink(chainId: ChainId, provider: NonFungibleAssetProvider) {
-    switch (provider) {
-        case NonFungibleAssetProvider.OPENSEA:
-            if (chainId === ChainId.Rinkeby) return 'https://testnets.opensea.io'
-            return 'https://opensea.io'
-        case NonFungibleAssetProvider.RARIBLE:
-            return 'https://rarible.com'
-        case NonFungibleAssetProvider.NFTSCAN:
-            return 'https://nftscan.com'
-        case NonFungibleAssetProvider.ZORA:
-            return 'https://zora.co'
-        default:
-            unreachable(provider)
-    }
-}
-
 export function resolveCollectibleAssetLink(chainId: ChainId, provider: NonFungibleAssetProvider) {
     switch (provider) {
         case NonFungibleAssetProvider.OPENSEA:

@@ -24,6 +24,10 @@ export function isFortmaticSupported(chainId: ChainId) {
     return [ChainId.Mainnet, ChainId.BSC].includes(chainId)
 }
 
+export function getDefaultChainId() {
+    return ChainId.Mainnet
+}
+
 export function getChainDetailed(chainId = ChainId.Mainnet) {
     return CHAINS.find((x) => x.chainId === chainId)
 }
@@ -118,13 +122,12 @@ const chainNameMap: Record<NetworkType, string> = {
     [NetworkType.Conflux]: 'Conflux',
 }
 
-export function getNetworkTypeFromChainId(chainId: ChainId, value?: boolean) {
+export function getNetworkTypeFromChainId(chainId: ChainId) {
     const chainDetailed = getChainDetailed(chainId)
     const entry = Object.entries(chainNameMap).find(([_, value]) => {
         if (value === chainDetailed?.chain) return true
         return false
     })
-    if (value) return entry?.[1] as NetworkType | undefined
     return entry?.[0] as NetworkType | undefined
 }
 export function getChainFromChainId(chainId: ChainId) {

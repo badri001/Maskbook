@@ -740,23 +740,22 @@ export declare namespace Web3Plugin {
             getDefaultChainId(): ChainId
             getChainDetailed(chainId: ChainId): ChainDetailed<ChainId> | undefined
             getAverageBlockDelay(chainId: ChainId, scale?: number): number
+            getNetworkTypeFromChainId(chainId: ChainId): NetworkType | undefined
+            getChainIdFromNetworkType(networkType: NetworkType): ChainId
 
             resolveChainName(chainId: ChainId): string
             resolveChainColor(chainId: ChainId): string
             resolveChainFullName(chainId: ChainId): string
+            resolveNetworkName(networkType: NetworkType): string
             resolveProviderName(providerType: ProviderType): string
             resolveProviderHomeLink(providerType: ProviderType): string
             resolveProviderShortenLink(providerType: ProviderType): string
-            resolveNetworkName(networkType: NetworkType): string
-
-            /** convert */
-            getNetworkTypeFromChainId(chainId: ChainId): NetworkType
-            getChainIdFromNetworkType(networkType: NetworkType): ChainId
+            resolveProviderDownloadLink(providerType: ProviderType): string
 
             /** explorer */
-            resolveTransactionLink(chainId: ChainId, id: string): string
             resolveAddressLink(chainId: ChainId, address: string): string
             resolveBlockLink(chainId: ChainId, blockNumber: string): string
+            resolveTransactionLink(chainId: ChainId, id: string): string
             resolveDomainLink(domain: string): string
             resolveFungibleTokenLink(chainId: ChainId, address: string): string
             resolveNonFungibleTokenLink(chainId: ChainId, address: string, tokenId: string): string

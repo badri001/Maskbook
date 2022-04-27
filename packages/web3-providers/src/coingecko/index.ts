@@ -1,16 +1,16 @@
-import type { CurrencyType } from '@masknet/plugin-infra/web3'
+import type { CurrencyType, Web3Plugin } from '@masknet/plugin-infra/web3'
 import { COINGECKO_URL_BASE } from './constants'
 import type { PriceAPI } from '..'
 
 export class CoinGeckoAPI implements PriceAPI.Provider {
     async getTokenPrice(tokenId: string, currency: CurrencyType) {
         const requestPath = `${COINGECKO_URL_BASE}/simple/price?ids=${tokenId}&vs_currencies=${currency}`
-        const price = await fetch(requestPath).then((r) => r.json() as Promise<PriceAPI.CryptoPrice>)
+        const price = await fetch(requestPath).then((r) => r.json() as Promise<Web3Plugin.CryptoPrices>)
         return price[tokenId]
     }
 
     async getTokensPrice(tokenIds: string[], currency: CurrencyType) {
         const requestPath = `${COINGECKO_URL_BASE}/simple/price?ids=${tokenIds}&vs_currencies=${currency}`
-        return fetch(requestPath).then((r) => r.json() as Promise<PriceAPI.CryptoPrice>)
+        return fetch(requestPath).then((r) => r.json() as Promise<Web3Plugin.CryptoPrices>)
     }
 }

@@ -62,12 +62,12 @@ function createAssetLink(account: OpenSeaCustomAccount | undefined) {
     })
 }
 
-function createNFTToken(chainId: ChainId, asset: OpenSeaResponse): Web3Plugin.NonFungibleToken {
+function createNFTToken(chainId: ChainId, asset: OpenSeaResponse): Web3Plugin.NonFungibleToken<ChainId, SchemaType> {
     return {
         id: asset.token_address,
         chainId,
         type: TokenType.NonFungible,
-        subType: SchemaType.ERC721,
+        schema: SchemaType.ERC721,
         tokenId: asset.token_id,
         address: asset.token_address,
         metadata: {
@@ -99,7 +99,7 @@ function createNFTToken(chainId: ChainId, asset: OpenSeaResponse): Web3Plugin.No
     }
 }
 
-function createNFTAsset(chainId: ChainId, asset: OpenSeaResponse): Web3Plugin.NonFungibleAsset {
+function createNFTAsset(chainId: ChainId, asset: OpenSeaResponse): Web3Plugin.NonFungibleAsset<ChainId, SchemaType> {
     const desktopOrder = head(
         asset.orders?.sort((a, b) =>
             new BigNumber(getOrderUSDPrice(b.current_price, b.payment_token_contract?.usd_price) ?? 0)
@@ -159,7 +159,7 @@ function createNFTAsset(chainId: ChainId, asset: OpenSeaResponse): Web3Plugin.No
                           id: x.payment_token,
                           chainId,
                           type: TokenType.Fungible,
-                          subType: SchemaType.ERC20,
+                          schema: SchemaType.ERC20,
                           name: 'Unknown Token',
                           symbol: 'UNKNOWN',
                           address: x.payment_token,

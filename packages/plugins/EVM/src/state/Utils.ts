@@ -22,41 +22,28 @@ import {
     ProviderType,
     NetworkType,
     getAverageBlockDelay,
+    getDefaultChainId,
+    resolveProviderName,
+    resolveProviderHomeLink,
+    resolveProviderShortenLink,
+    resolveProviderDownloadLink,
+    resolveNetworkName,
+    getChainIdFromNetworkType,
+    getNetworkTypeFromChainId,
 } from '@masknet/web3-shared-evm'
 
 export class Utils implements Web3Plugin.ObjectCapabilities.Others<ChainId, ProviderType, NetworkType> {
-    getDefaultChainId(): ChainId {
-        throw new Error('Method not implemented.')
-    }
-    resolveProviderName(providerType: ProviderType): string {
-        throw new Error('Method not implemented.')
-    }
-    resolveProviderHomeLink(providerType: ProviderType): string {
-        throw new Error('Method not implemented.')
-    }
-    resolveProviderShortenLink(providerType: ProviderType): string {
-        throw new Error('Method not implemented.')
-    }
-    resolveNetworkName(networkType: NetworkType): string {
-        throw new Error('Method not implemented.')
-    }
-    getNetworkTypeFromChainId(chainId: ChainId): NetworkType {
-        throw new Error('Method not implemented.')
-    }
-    getChainIdFromNetworkType(networkType: NetworkType): ChainId {
-        throw new Error('Method not implemented.')
-    }
-    resolveFungibleTokenLink(chainId: ChainId, address: string): string {
-        throw new Error('Method not implemented.')
-    }
-
     isChainIdValid = isChainIdValid
     isValidDomain = isValidDomain
     isValidAddress = isValidAddress
     isSameAddress = isSameAddress
 
+    getDefaultChainId = getDefaultChainId
     getChainDetailed = getChainDetailed
     getAverageBlockDelay = getAverageBlockDelay
+
+    getNetworkTypeFromChainId = getNetworkTypeFromChainId
+    getChainIdFromNetworkType = getChainIdFromNetworkType
 
     formatAddress = formatEthereumAddress
     formatCurrency = formatCurrency
@@ -66,13 +53,20 @@ export class Utils implements Web3Plugin.ObjectCapabilities.Others<ChainId, Prov
     resolveChainName = resolveChainName
     resolveChainFullName = resolveChainFullName
     resolveChainColor = resolveChainColor
+    resolveNetworkName = resolveNetworkName
+    resolveProviderName = resolveProviderName
+    resolveProviderHomeLink = resolveProviderHomeLink
+    resolveProviderShortenLink = resolveProviderShortenLink
+    resolveProviderDownloadLink = resolveProviderDownloadLink
 
-    resolveTransactionLink = resolveTransactionLinkOnExplorer
     resolveAddressLink = resolveAddressLinkOnExplorer
     resolveBlockLink = resolveBlockLinkOnExplorer
+    resolveTransactionLink = resolveTransactionLinkOnExplorer
     resolveDomainLink = resolveDomainLink
+
+    resolveFungibleTokenLink = resolveAddressLinkOnExplorer
     resolveNonFungibleTokenLink = (chainId: ChainId, address: string, tokenId: string) =>
-        resolveCollectibleLink(chainId as ChainId, NonFungibleAssetProvider.OPENSEA, {
+        resolveCollectibleLink(chainId, NonFungibleAssetProvider.OPENSEA, {
             // @ts-ignore
             contractDetailed: { address },
             tokenId,

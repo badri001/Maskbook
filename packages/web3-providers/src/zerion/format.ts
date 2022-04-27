@@ -6,8 +6,9 @@ import {
     getTokenConstants,
     getZerionConstants,
     getChainIdFromNetworkType,
+    SchemaType,
 } from '@masknet/web3-shared-evm'
-import type { Web3Plugin, TokenType } from '@masknet/plugin-infra/web3'
+import { Web3Plugin, TokenType } from '@masknet/plugin-infra/web3'
 import {
     SocketRequestAssetScope,
     ZerionAddressAsset,
@@ -18,8 +19,6 @@ import {
     ZerionTransactionItem,
     ZerionTransactionStatus,
 } from './type'
-
-type Asset = Web3Plugin.FungibleAsset
 
 export function resolveZerionAssetsScopeName(networkType: NetworkType) {
     return getZerionConstants(getChainIdFromNetworkType(networkType)).ASSETS_SCOPE_NAME ?? ''
@@ -54,7 +53,7 @@ export const resolveChainByScope = createLookupTableResolver<
 export function formatAssets(
     chainId: ChainId,
     data: ZerionAddressAsset[] | ZerionAddressCovalentAsset[],
-): Web3Plugin.FungibleAsset[] {
+): Web3Plugin.FungibleAsset<ChainId, SchemaType>[] {
     return data.map(({ asset, quantity }) => {
         const balance = leftShift(quantity, asset.decimals).toNumber()
         const value = (asset as ZerionAsset).price?.value ?? (asset as ZerionCovalentAsset).value ?? 0
@@ -64,6 +63,13 @@ export function formatAssets(
         return {
             id: address,
             chainId,
+            type: TokenType.Fungible,
+            schema: SchemaType.ERC20,
+            name: asset.name ?? 'Unknown Token',
+            symbol: asset.symbol,
+            decimals: asset.decimals,
+            address,
+            logoURI: asset.icon_url,
             balance: quantity,
             price: {
                 usd: new BigNumber(value).toString(),
@@ -71,22 +77,14 @@ export function formatAssets(
             value: {
                 usd: multipliedBy(balance, value).toString(),
             },
-            token: {
-                id: address,
-                type: TokenType.Fungible,
-                chainId,
-                name: asset.name ?? 'Unknown Token',
-                symbol: asset.symbol,
-                decimals: asset.decimals,
-                address,
-                logoURI: asset.icon_url,
-            },
-            logoURI: asset.icon_url,
         }
     })
 }
 
-export function formatTransactions(chainId: ChainId, data: ZerionTransactionItem[]): Web3Plugin.Transaction[] {
+export function formatTransactions(
+    chainId: ChainId,
+    data: ZerionTransactionItem[],
+): Web3Plugin.Transaction<ChainId, SchemaType>[] {
     return data
         .filter(({ type }) => type !== ZerionRBDTransactionType.AUTHORIZE)
         .map((transaction) => {
@@ -107,6 +105,7 @@ export function formatTransactions(chainId: ChainId, data: ZerionTransactionItem
                             id: asset.asset_code,
                             // TODO: distinguish NFT
                             type: TokenType.Fungible,
+                            schema: SchemaType.ERC20,
                             chainId,
                             name: asset.name,
                             symbol: asset.symbol,

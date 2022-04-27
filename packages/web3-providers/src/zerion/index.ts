@@ -1,7 +1,7 @@
 import io from 'socket.io-client'
 import { values } from 'lodash-unified'
 import { getEnumAsArray } from '@dimensiondev/kit'
-import { ChainId, getZerionConstants } from '@masknet/web3-shared-evm'
+import { ChainId, getZerionConstants, SchemaType } from '@masknet/web3-shared-evm'
 import type { Pageable, Web3Plugin } from '@masknet/plugin-infra/web3'
 import type {
     SocketRequestBody,
@@ -102,7 +102,7 @@ const filterAssetType = ['compound', 'trash', 'uniswap', 'uniswap-v2', 'nft']
 
 export class ZerionAPI implements FungibleTokenAPI.Provider, HistoryAPI.Provider {
     async getAssets(chainId: ChainId, address: string) {
-        let result: Web3Plugin.FungibleAsset[] = []
+        let result: Web3Plugin.FungibleAsset<ChainId, SchemaType>[] = []
         const pairs = getEnumAsArray(ChainId).map(
             (x) => [x.value, getZerionConstants(x.value).ASSETS_SCOPE_NAME] as const,
         )
@@ -129,13 +129,17 @@ export class ZerionAPI implements FungibleTokenAPI.Provider, HistoryAPI.Provider
         }
 
         return {
+            currentPage: 0,
             data: result,
             hasNextPage: false,
         }
     }
 
-    async getTransactions(chainId: ChainId, address: string): Promise<Pageable<Web3Plugin.Transaction>> {
-        let result: Web3Plugin.Transaction[] = []
+    async getTransactions(
+        chainId: ChainId,
+        address: string,
+    ): Promise<Pageable<Web3Plugin.Transaction<ChainId, SchemaType>>> {
+        let result: Web3Plugin.Transaction<ChainId, SchemaType>[] = []
         // xdai-assets is not support
         const pairs = getEnumAsArray(ChainId).map(
             (x) => [x.value, getZerionConstants(x.value).TRANSACTIONS_SCOPE_NAME] as const,
